@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block title %}Explore Ideas - Innovation Idea Tracker{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="hero-emoji">💡</span>
+                Innovation Starts Here
+            </h1>
+            <p class="hero-subtitle">
+                Submit, explore, and vote on innovative ideas. Together, we can transform concepts into reality.
+            </p>
+            {% if not current_user.is_authenticated %}
+            <div class="hero-actions">
+                <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
+                    <span>Get Started</span>
+                    <span class="btn-icon">→</span>
+                </a>
+                <a href="{{ url_for('login') }}" class="btn btn-ghost btn-lg">Sign In</a>
+            </div>
+            {% else %}
+            <div class="hero-actions">
+                <a href="{{ url_for('submit_idea') }}" class="btn btn-primary btn-lg">
+                    <span>✨ Submit Your Idea</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        <div class="hero-stats">
+            <div class="stat-card">
+                <span class="stat-number">{{ ideas|length }}</span>
+                <span class="stat-label">Ideas Shared</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ categories|length }}</span>
+                <span class="stat-label">Categories</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section class="filters-section">
+        <div class="filters-wrapper">
+            <!-- Category Filter -->
+            <div class="filter-group">
+                <span class="filter-label">Category:</span>
+                <div class="filter-chips">
+                    <a href="{{ url_for('home', sort=current_sort) }}"
+                        class="filter-chip {% if not current_category %}active{% endif %}">
+                        All
+                    </a>
+                    {% for category in categories %}
+                    <a href="{{ url_for('home', category=category.id, sort=current_sort) }}"
+                        class="filter-chip {% if current_category == category.id %}active{% endif %}"
+                        style="--chip-color: {{ category.color }}">
+                        {{ category.icon }} {{ category.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Sort Options -->
+            <div class="filter-group">
+                <span class="filter-label">Sort by:</span>
+                <div class="sort-buttons">
+                    <a href="{{ url_for('home', category=current_category, sort='newest') }}"
+                        class="sort-btn {% if current_sort == 'newest' %}active{% endif %}">
+                        🕐 Newest
+                    </a>
+                    <a href="{{ url_for('home', category=current_category, sort='popular') }}"
+                        class="sort-btn {% if current_sort == 'popular' %}active{% endif %}">
+                        🔥 Popular
+                    </a>
+                    <a href="{{ url_for('home', category=current_category, sort='discussed') }}"
+                        class="sort-btn {% if current_sort == 'discussed' %}active{% endif %}">
+                        💬 Discussed
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ideas Grid -->
+    <section class="ideas-section">
+        {% if ideas %}
+        <div class="ideas-grid">
+            {% for idea in ideas %}
+            <article class="idea-card" data-status="{{ idea.status }}">
+                <div class="idea-header">
+                    <span class="idea-category"
+                        style="background: {{ idea.category_rel.color }}20; color: {{ idea.category_rel.color }}">
+                        {{ idea.category_rel.icon }} {{ idea.category_rel.name }}
+                    </span>
+                    <span class="idea-status status-{{ idea.status }}">{{ idea.status.title() }}</span>
+                </div>
+
+                <h3 class="idea-title">
+                    <a href="{{ url_for('view_idea', idea_id=idea.id) }}">{{ idea.title }}</a>
+                </h3>
+
+                <p class="idea-description">
+                    {{ idea.description[:150] }}{% if idea.description|length > 150 %}...{% endif %}
+                </p>
+
+                <div class="idea-meta">
+                    <div class="idea-author">
+                        <div class="author-avatar" style="background: {{ idea.author.avatar_color }}">
+                            {{ idea.author.get_initials() }}
+                        </div>
+                        <div class="author-info">
+                            <span class="author-name">{{ idea.author.username }}</span>
+                            <span class="idea-date">{{ idea.created_at.strftime('%b %d, %Y') }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="idea-footer">
+                    <div class="idea-stats">
+                        <div class="vote-section">
+                            {% if current_user.is_authenticated %}
+                            <button
+                                class="vote-btn upvote {% if idea.user_vote(current_user.id) == 1 %}active{% endif %}"
+                                id="upvote-{{ idea.id }}" onclick="vote({{ idea.id }}, 1)">
+                                <span class="vote-icon">▲</span>
+                                <span id="upvotes-{{ idea.id }}">{{ idea.get_upvotes() }}</span>
+                            </button>
+                            <span class="vote-count" id="vote-count-{{ idea.id }}">{{ idea.get_vote_count() }}</span>
+                            <button
+                                class="vote-btn downvote {% if idea.user_vote(current_user.id) == -1 %}active{% endif %}"
+                                id="downvote-{{ idea.id }}" onclick="vote({{ idea.id }}, -1)">
+                                <span class="vote-icon">▼</span>
+                                <span id="downvotes-{{ idea.id }}">{{ idea.get_downvotes() }}</span>
+                            </button>
+                            {% else %}
+                            <span class="vote-display">
+                                <span class="vote-icon">▲</span>
+                                <span>{{ idea.get_vote_count() }}</span>
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <a href="{{ url_for('view_idea', idea_id=idea.id) }}" class="comment-count">
+                            💬 {{ idea.get_comment_count() }}
+                        </a>
+                    </div>
+
+                    <a href="{{ url_for('view_idea', idea_id=idea.id) }}" class="btn btn-sm btn-ghost">
+                        View Details →
+                    </a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+        <div class="pagination">
+            {% if page > 1 %}
+            <a href="{{ url_for('home', page=page-1, category=current_category, sort=current_sort) }}" class="page-btn">
+                ← Previous
+            </a>
+            {% endif %}
+
+            <div class="page-numbers">
+                {% for p in range(1, total_pages + 1) %}
+                {% if p == page %}
+                <span class="page-num active">{{ p }}</span>
+                {% else %}
+                <a href="{{ url_for('home', page=p, category=current_category, sort=current_sort) }}"
+                    class="page-num">{{ p }}</a>
+                {% endif %}
+                {% endfor %}
+            </div>
+
+            {% if page < total_pages %} <a
+                href="{{ url_for('home', page=page+1, category=current_category, sort=current_sort) }}"
+                class="page-btn">
+                Next →
+                </a>
+                {% endif %}
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🌱</div>
+            <h3>No ideas yet</h3>
+            <p>Be the first to share an innovative idea!</p>
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('submit_idea') }}" class="btn btn-primary">Submit an Idea</a>
+            {% else %}
+            <a href="{{ url_for('register') }}" class="btn btn-primary">Get Started</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

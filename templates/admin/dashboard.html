@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Innovation Idea Tracker{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="admin-page">
+        <div class="page-header">
+            <h1 class="page-title">
+                <span class="title-icon">⚙️</span>
+                Admin Dashboard
+            </h1>
+            <p class="page-subtitle">
+                Manage users, ideas, and categories
+            </p>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="admin-stats">
+            <div class="admin-stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #6366f1, #8b5cf6)">👥</div>
+                <div class="stat-info">
+                    <span class="stat-number">{{ stats.total_users }}</span>
+                    <span class="stat-label">Total Users</span>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #34d399)">💡</div>
+                <div class="stat-info">
+                    <span class="stat-number">{{ stats.total_ideas }}</span>
+                    <span class="stat-label">Ideas Submitted</span>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24)">👍</div>
+                <div class="stat-info">
+                    <span class="stat-number">{{ stats.total_votes }}</span>
+                    <span class="stat-label">Total Votes</span>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #ec4899, #f472b6)">💬</div>
+                <div class="stat-info">
+                    <span class="stat-number">{{ stats.total_comments }}</span>
+                    <span class="stat-label">Comments</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Sections -->
+        <div class="admin-grid">
+            <!-- Users Section -->
+            <section class="admin-section">
+                <div class="section-header">
+                    <h2 class="section-title">👥 Users</h2>
+                    <span class="section-count">{{ users|length }} total</span>
+                </div>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Joined</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-avatar-small" style="background: {{ user.avatar_color }}">
+                                            {{ user.get_initials() }}
+                                        </div>
+                                        <span>{{ user.username }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ user.email }}</td>
+                                <td>
+                                    <select class="role-select" onchange="changeRole({{ user.id }}, this.value)" {% if
+                                        user.id==current_user.id %}disabled{% endif %}>
+                                        <option value="submitter" {% if user.role=='submitter' %}selected{% endif %}>
+                                            Submitter</option>
+                                        <option value="reviewer" {% if user.role=='reviewer' %}selected{% endif %}>
+                                            Reviewer</option>
+                                        <option value="admin" {% if user.role=='admin' %}selected{% endif %}>Admin
+                                        </option>
+                                    </select>
+                                </td>
+                                <td>{{ user.created_at.strftime('%b %d, %Y') }}</td>
+                                <td>
+                                    <span class="ideas-count">{{ user.ideas.count() }} ideas</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Recent Ideas Section -->
+            <section class="admin-section">
+                <div class="section-header">
+                    <h2 class="section-title">💡 Recent Ideas</h2>
+                    <a href="{{ url_for('home') }}" class="section-link">View all →</a>
+                </div>
+                <div class="admin-ideas-list">
+                    {% for idea in ideas[:10] %}
+                    <div class="admin-idea-item">
+                        <div class="idea-info">
+                            <a href="{{ url_for('view_idea', idea_id=idea.id) }}" class="idea-title">{{ idea.title
+                                }}</a>
+                            <span class="idea-meta">by {{ idea.author.username }} • {{ idea.created_at.strftime('%b %d')
+                                }}</span>
+                        </div>
+                        <div class="idea-actions">
+                            <span class="idea-status status-{{ idea.status }}">{{ idea.status }}</span>
+                            <select class="status-select" onchange="changeIdeaStatus({{ idea.id }}, this.value)">
+                                <option value="pending" {% if idea.status=='pending' %}selected{% endif %}>Pending
+                                </option>
+                                <option value="approved" {% if idea.status=='approved' %}selected{% endif %}>Approved
+                                </option>
+                                <option value="rejected" {% if idea.status=='rejected' %}selected{% endif %}>Rejected
+                                </option>
+                                <option value="implemented" {% if idea.status=='implemented' %}selected{% endif %}>
+                                    Implemented</option>
+                            </select>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- Categories Section -->
+            <section class="admin-section categories-section">
+                <div class="section-header">
+                    <h2 class="section-title">🏷️ Categories</h2>
+                </div>
+                <div class="categories-grid">
+                    {% for category in categories %}
+                    <div class="category-card" style="border-color: {{ category.color }}">
+                        <span class="category-icon">{{ category.icon }}</span>
+                        <span class="category-name">{{ category.name }}</span>
+                        <span class="category-count">{{ category.ideas.count() }} ideas</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function changeRole(userId, role) {
+        try {
+            const response = await fetch(`/admin/user/${userId}/role`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ role: role })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                showFlash('Role updated successfully', 'success');
+            } else {
+                showFlash('Failed to update role', 'error');
+            }
+        } catch (error) {
+            console.error('Role change error:', error);
+        }
+    }
+
+    async function changeIdeaStatus(ideaId, status) {
+        try {
+            const response = await fetch(`/admin/idea/${ideaId}/status`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: status })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                showFlash('Status updated successfully', 'success');
+            }
+        } catch (error) {
+            console.error('Status change error:', error);
+        }
+    }
+
+    function showFlash(message, type) {
+        const flash = document.createElement('div');
+        flash.className = `flash flash-${type}`;
+        flash.innerHTML = `
+        <span class="flash-icon">${type === 'success' ? '✅' : '❌'}</span>
+        <span class="flash-message">${message}</span>
+    `;
+
+        let container = document.querySelector('.flash-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'flash-container';
+            document.body.appendChild(container);
+        }
+        container.appendChild(flash);
+
+        setTimeout(() => flash.remove(), 3000);
+    }
+</script>
+{% endblock %}

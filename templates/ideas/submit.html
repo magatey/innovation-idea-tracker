@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Submit New Idea - Innovation Idea Tracker{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="submit-page">
+        <div class="submit-header">
+            <a href="{{ url_for('home') }}" class="back-link">← Back to Ideas</a>
+            <h1 class="submit-title">
+                <span class="title-icon">✨</span>
+                Submit Your Idea
+            </h1>
+            <p class="submit-subtitle">
+                Share your innovative idea with the community. The best ideas come from diverse perspectives!
+            </p>
+        </div>
+
+        <div class="submit-form-card">
+            <form method="POST" class="submit-form">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    <label for="title" class="form-label">
+                        <span class="label-icon">📝</span>
+                        Idea Title
+                    </label>
+                    <p class="form-hint">A clear, concise title that captures the essence of your idea</p>
+                    {{ form.title(class="form-input", placeholder="E.g., AI-Powered Customer Support Chatbot",
+                    id="title") }}
+                    {% if form.title.errors %}
+                    <div class="form-error">
+                        {% for error in form.title.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="category_id" class="form-label">
+                        <span class="label-icon">🏷️</span>
+                        Category
+                    </label>
+                    <p class="form-hint">Select the category that best fits your idea</p>
+                    {{ form.category_id(class="form-select", id="category_id") }}
+                    {% if form.category_id.errors %}
+                    <div class="form-error">
+                        {% for error in form.category_id.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="form-label">
+                        <span class="label-icon">💭</span>
+                        Description
+                    </label>
+                    <p class="form-hint">Describe your idea in detail. What problem does it solve? What are the
+                        benefits?</p>
+                    {{ form.description(class="form-textarea", placeholder="Describe your innovative idea here.
+                    Include:\n\n• What problem does it solve?\n• Who would benefit from this?\n• How would it work?\n•
+                    What resources would be needed?", id="description", rows=8) }}
+                    {% if form.description.errors %}
+                    <div class="form-error">
+                        {% for error in form.description.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-actions">
+                    <a href="{{ url_for('home') }}" class="btn btn-ghost">Cancel</a>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <span>🚀 Submit Idea</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="submit-tips">
+            <h3>💡 Tips for a Great Idea Submission</h3>
+            <ul class="tips-list">
+                <li>
+                    <span class="tip-icon">🎯</span>
+                    <span>Be specific about the problem you're solving</span>
+                </li>
+                <li>
+                    <span class="tip-icon">📊</span>
+                    <span>Include potential benefits and impact</span>
+                </li>
+                <li>
+                    <span class="tip-icon">🔧</span>
+                    <span>Mention any resources or tools needed</span>
+                </li>
+                <li>
+                    <span class="tip-icon">🌟</span>
+                    <span>Keep it clear and easy to understand</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

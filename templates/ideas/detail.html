@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ idea.title }} - Innovation Idea Tracker{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="detail-layout">
+        <!-- Main Content -->
+        <div class="detail-main">
+            <!-- Idea Card -->
+            <article class="idea-detail-card">
+                <div class="idea-detail-header">
+                    <a href="{{ url_for('home') }}" class="back-link">← Back to Ideas</a>
+                    <div class="idea-badges">
+                        <span class="idea-category"
+                            style="background: {{ idea.category_rel.color }}20; color: {{ idea.category_rel.color }}">
+                            {{ idea.category_rel.icon }} {{ idea.category_rel.name }}
+                        </span>
+                        <span class="idea-status status-{{ idea.status }}">{{ idea.status.title() }}</span>
+                    </div>
+                </div>
+
+                <h1 class="idea-detail-title">{{ idea.title }}</h1>
+
+                <div class="idea-detail-meta">
+                    <div class="idea-author">
+                        <div class="author-avatar" style="background: {{ idea.author.avatar_color }}">
+                            {{ idea.author.get_initials() }}
+                        </div>
+                        <div class="author-info">
+                            <span class="author-name">{{ idea.author.username }}</span>
+                            <span class="author-role">{{ idea.author.role.title() }}</span>
+                        </div>
+                    </div>
+                    <span class="idea-date">📅 {{ idea.created_at.strftime('%B %d, %Y at %I:%M %p') }}</span>
+                </div>
+
+                <div class="idea-detail-content">
+                    {{ idea.description | safe }}
+                </div>
+
+                <!-- Vote Section -->
+                <div class="idea-detail-actions">
+                    <div class="vote-section-large">
+                        {% if current_user.is_authenticated %}
+                        <button
+                            class="vote-btn-large upvote {% if idea.user_vote(current_user.id) == 1 %}active{% endif %}"
+                            id="upvote-{{ idea.id }}" onclick="vote({{ idea.id }}, 1)">
+                            <span class="vote-icon">👍</span>
+                            <span class="vote-label">Upvote</span>
+                            <span class="vote-num" id="upvotes-{{ idea.id }}">{{ idea.get_upvotes() }}</span>
+                        </button>
+                        <div class="vote-score">
+                            <span class="score-number" id="vote-count-{{ idea.id }}">{{ idea.get_vote_count() }}</span>
+                            <span class="score-label">Score</span>
+                        </div>
+                        <button
+                            class="vote-btn-large downvote {% if idea.user_vote(current_user.id) == -1 %}active{% endif %}"
+                            id="downvote-{{ idea.id }}" onclick="vote({{ idea.id }}, -1)">
+                            <span class="vote-icon">👎</span>
+                            <span class="vote-label">Downvote</span>
+                            <span class="vote-num" id="downvotes-{{ idea.id }}">{{ idea.get_downvotes() }}</span>
+                        </button>
+                        {% else %}
+                        <div class="vote-display-large">
+                            <span class="vote-icon">👍</span>
+                            <span>{{ idea.get_upvotes() }} upvotes</span>
+                        </div>
+                        <div class="vote-score">
+                            <span class="score-number">{{ idea.get_vote_count() }}</span>
+                            <span class="score-label">Score</span>
+                        </div>
+                        <div class="vote-display-large">
+                            <span class="vote-icon">👎</span>
+                            <span>{{ idea.get_downvotes() }} downvotes</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if current_user.is_authenticated and (current_user.id == idea.submitter_id or
+                    current_user.is_admin()) %}
+                    <form action="{{ url_for('delete_idea', idea_id=idea.id) }}" method="POST" class="delete-form"
+                        onsubmit="return confirm('Are you sure you want to delete this idea? This cannot be undone.')">
+                        <button type="submit" class="btn btn-danger">🗑️ Delete Idea</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </article>
+
+            <!-- Comments Section -->
+            <section class="comments-section">
+                <h2 class="comments-title">
+                    💬 Comments <span class="comment-count-badge">{{ comments|length }}</span>
+                </h2>
+
+                <!-- Add Comment Form -->
+                {% if current_user.is_authenticated %}
+                <div class="comment-form-wrapper">
+                    <div class="comment-avatar" style="background: {{ current_user.avatar_color }}">
+                        {{ current_user.get_initials() }}
+                    </div>
+                    <form action="{{ url_for('add_comment', idea_id=idea.id) }}" method="POST" class="comment-form">
+                        {{ form.hidden_tag() }}
+                        {{ form.content(class="comment-input", placeholder="Share your thoughts on this idea...",
+                        rows=3) }}
+                        <button type="submit" class="btn btn-primary">Post Comment</button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="comment-login-prompt">
+                    <p>💬 <a href="{{ url_for('login') }}">Sign in</a> to join the conversation</p>
+                </div>
+                {% endif %}
+
+                <!-- Comments List -->
+                <div class="comments-list">
+                    {% if comments %}
+                    {% for comment in comments %}
+                    <div class="comment-thread">
+                        <div class="comment" id="comment-{{ comment.id }}">
+                            <div class="comment-avatar" style="background: {{ comment.author.avatar_color }}">
+                                {{ comment.author.get_initials() }}
+                            </div>
+                            <div class="comment-body">
+                                <div class="comment-header">
+                                    <span class="comment-author">{{ comment.author.username }}</span>
+                                    <span class="comment-role">{{ comment.author.role.title() }}</span>
+                                    <span class="comment-time">{{ comment.time_ago() }}</span>
+                                </div>
+                                <div class="comment-content">
+                                    {{ comment.content }}
+                                </div>
+                                {% if current_user.is_authenticated %}
+                                <div class="comment-actions">
+                                    <button class="reply-btn" onclick="toggleReply({{ comment.id }})">
+                                        ↩️ Reply
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Reply Form (hidden by default) -->
+                        {% if current_user.is_authenticated %}
+                        <div class="reply-form-wrapper hidden" id="reply-form-{{ comment.id }}">
+                            <form action="{{ url_for('add_comment', idea_id=idea.id) }}" method="POST"
+                                class="reply-form">
+                                {{ form.hidden_tag() }}
+                                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                <textarea name="content" class="reply-input" placeholder="Write a reply..." rows="2"
+                                    required></textarea>
+                                <div class="reply-actions">
+                                    <button type="button" class="btn btn-ghost btn-sm"
+                                        onclick="toggleReply({{ comment.id }})">Cancel</button>
+                                    <button type="submit" class="btn btn-primary btn-sm">Reply</button>
+                                </div>
+                            </form>
+                        </div>
+                        {% endif %}
+
+                        <!-- Replies -->
+                        {% set replies = comment.get_replies() %}
+                        {% if replies %}
+                        <div class="replies">
+                            {% for reply in replies %}
+                            <div class="comment reply" id="comment-{{ reply.id }}">
+                                <div class="comment-avatar small" style="background: {{ reply.author.avatar_color }}">
+                                    {{ reply.author.get_initials() }}
+                                </div>
+                                <div class="comment-body">
+                                    <div class="comment-header">
+                                        <span class="comment-author">{{ reply.author.username }}</span>
+                                        <span class="comment-time">{{ reply.time_ago() }}</span>
+                                    </div>
+                                    <div class="comment-content">
+                                        {{ reply.content }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="no-comments">
+                        <div class="empty-icon">💭</div>
+                        <p>No comments yet. Be the first to share your thoughts!</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </section>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="detail-sidebar">
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">📊 Stats</h3>
+                <div class="stats-list">
+                    <div class="stat-item">
+                        <span class="stat-label">Upvotes</span>
+                        <span class="stat-value">{{ idea.get_upvotes() }}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Downvotes</span>
+                        <span class="stat-value">{{ idea.get_downvotes() }}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Comments</span>
+                        <span class="stat-value">{{ idea.get_comment_count() }}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Status</span>
+                        <span class="stat-value status-{{ idea.status }}">{{ idea.status.title() }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">👤 Submitted By</h3>
+                <div class="submitter-info">
+                    <div class="author-avatar large" style="background: {{ idea.author.avatar_color }}">
+                        {{ idea.author.get_initials() }}
+                    </div>
+                    <div class="submitter-details">
+                        <span class="submitter-name">{{ idea.author.username }}</span>
+                        <span class="submitter-role">{{ idea.author.role.title() }}</span>
+                        <span class="submitter-date">Member since {{ idea.author.created_at.strftime('%b %Y') }}</span>
+                    </div>
+                </div>
+            </div>
+
+            {% if current_user.is_authenticated and current_user.is_reviewer() %}
+            <div class="sidebar-card admin-card">
+                <h3 class="sidebar-title">⚙️ Admin Actions</h3>
+                <div class="status-buttons">
+                    <button onclick="changeStatus({{ idea.id }}, 'approved')" class="status-btn approved">✓
+                        Approve</button>
+                    <button onclick="changeStatus({{ idea.id }}, 'rejected')" class="status-btn rejected">✗
+                        Reject</button>
+                    <button onclick="changeStatus({{ idea.id }}, 'implemented')" class="status-btn implemented">🚀
+                        Implemented</button>
+                </div>
+            </div>
+            {% endif %}
+        </aside>
+    </div>
+</div>
+
+<script>
+    async function changeStatus(ideaId, status) {
+        try {
+            const response = await fetch(`/admin/idea/${ideaId}/status`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: status })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                location.reload();
+            }
+        } catch (error) {
+            console.error('Status change error:', error);
+        }
+    }
+</script>
+{% endblock %}

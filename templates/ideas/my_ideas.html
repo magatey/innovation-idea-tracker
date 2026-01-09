@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}My Ideas - Innovation Idea Tracker{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="my-ideas-page">
+        <div class="page-header">
+            <h1 class="page-title">
+                <span class="title-icon">📁</span>
+                My Ideas
+            </h1>
+            <p class="page-subtitle">
+                Track and manage all the ideas you've submitted
+            </p>
+            <a href="{{ url_for('submit_idea') }}" class="btn btn-primary">
+                ✨ Submit New Idea
+            </a>
+        </div>
+
+        {% if ideas %}
+        <div class="my-ideas-list">
+            {% for idea in ideas %}
+            <article class="my-idea-card">
+                <div class="idea-status-bar status-{{ idea.status }}"></div>
+                <div class="my-idea-content">
+                    <div class="my-idea-header">
+                        <span class="idea-category"
+                            style="background: {{ idea.category_rel.color }}20; color: {{ idea.category_rel.color }}">
+                            {{ idea.category_rel.icon }} {{ idea.category_rel.name }}
+                        </span>
+                        <span class="idea-status status-{{ idea.status }}">{{ idea.status.title() }}</span>
+                    </div>
+
+                    <h3 class="my-idea-title">
+                        <a href="{{ url_for('view_idea', idea_id=idea.id) }}">{{ idea.title }}</a>
+                    </h3>
+
+                    <p class="my-idea-description">
+                        {{ idea.description[:200] }}{% if idea.description|length > 200 %}...{% endif %}
+                    </p>
+
+                    <div class="my-idea-footer">
+                        <div class="my-idea-stats">
+                            <span class="stat">👍 {{ idea.get_upvotes() }}</span>
+                            <span class="stat">👎 {{ idea.get_downvotes() }}</span>
+                            <span class="stat">💬 {{ idea.get_comment_count() }}</span>
+                            <span class="stat">📅 {{ idea.created_at.strftime('%b %d, %Y') }}</span>
+                        </div>
+                        <div class="my-idea-actions">
+                            <a href="{{ url_for('view_idea', idea_id=idea.id) }}" class="btn btn-ghost btn-sm">View</a>
+                            <form action="{{ url_for('delete_idea', idea_id=idea.id) }}" method="POST"
+                                style="display:inline"
+                                onsubmit="return confirm('Are you sure you want to delete this idea?')">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🌱</div>
+            <h3>No ideas yet</h3>
+            <p>You haven't submitted any ideas yet. Start sharing your innovative thoughts!</p>
+            <a href="{{ url_for('submit_idea') }}" class="btn btn-primary">Submit Your First Idea</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

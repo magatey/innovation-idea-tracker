@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Page Not Found - Innovation Idea Tracker{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="error-card">
+        <div class="error-icon">🔍</div>
+        <h1 class="error-title">404</h1>
+        <p class="error-message">Oops! The page you're looking for doesn't exist.</p>
+        <p class="error-submessage">It might have been moved or deleted.</p>
+        <a href="{{ url_for('home') }}" class="btn btn-primary">
+            ← Back to Home
+        </a>
+    </div>
+</div>
+{% endblock %}
