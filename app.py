@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
+from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, send_from_directory
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from models import db, User, Idea, Vote, Comment, Category
 from forms import RegistrationForm, LoginForm, IdeaForm, CommentForm, CategoryForm
@@ -304,6 +304,19 @@ def change_idea_status(idea_id):
 def my_ideas():
     ideas = Idea.query.filter_by(submitter_id=current_user.id).order_by(Idea.created_at.desc()).all()
     return render_template('ideas/my_ideas.html', ideas=ideas)
+
+# ============== DOCUMENTATION ROUTES ==============
+
+@app.route('/docs')
+@app.route('/docs/')
+def documentation():
+    """Serve the documentation page"""
+    return send_from_directory('docs', 'index.html')
+
+@app.route('/docs/<path:filename>')
+def docs_static(filename):
+    """Serve static files for documentation (images, etc.)"""
+    return send_from_directory('docs', filename)
 
 # ============== ERROR HANDLERS ==============
 

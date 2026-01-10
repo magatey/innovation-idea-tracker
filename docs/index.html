@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innovation Idea Tracker - Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #f59e0b;
+            --dark: #0f0f23;
+            --darker: #090917;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #1e1e3f;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .university-info {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .university-info strong {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .author-info {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: inline-block;
+        }
+
+        .author-info p {
+            margin: 0.3rem 0;
+            font-size: 0.95rem;
+        }
+
+        .author-name {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 1.1rem !important;
+        }
+
+        /* Navigation */
+        .toc {
+            background: var(--dark);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 900px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .toc h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .toc a {
+            color: var(--text);
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            display: block;
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .toc a:hover {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .toc-number {
+            color: var(--primary);
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        /* Main Content */
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            margin: 3rem 0;
+            padding: 2.5rem;
+            background: var(--dark);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h3 {
+            color: var(--secondary);
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem;
+        }
+
+        h4 {
+            color: var(--accent);
+            font-size: 1.1rem;
+            margin: 1.5rem 0 0.8rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        /* Lists */
+        ul,
+        ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
+
+        /* Images/Screenshots */
+        .screenshot-container {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .screenshot {
+            max-width: 100%;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .screenshot-caption {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.8rem;
+            font-style: italic;
+        }
+
+        /* Code blocks */
+        pre,
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        pre {
+            background: var(--darker);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        code {
+            background: rgba(99, 102, 241, 0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        th {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        /* Feature cards */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .feature-card {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .feature-card h4 {
+            color: var(--text);
+            margin: 0.5rem 0;
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        /* Category badges */
+        .category-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+
+        .category-badge {
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Architecture diagram */
+        .architecture-diagram {
+            background: var(--darker);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            line-height: 1.4;
+        }
+
+        /* Alert boxes */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: #3b82f6;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: var(--success);
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: var(--accent);
+        }
+
+        /* Step guides */
+        .steps {
+            counter-reset: step;
+        }
+
+        .step {
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            position: relative;
+            padding-left: 4rem;
+        }
+
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2rem;
+            height: 2rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+
+        .footer p {
+            margin: 0.3rem 0;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                color: #333;
+            }
+
+            .header,
+            section,
+            .toc {
+                background: white;
+                border: 1px solid #ddd;
+            }
+
+            h1,
+            h2,
+            .toc h2 {
+                color: #4f46e5;
+                -webkit-text-fill-color: #4f46e5;
+            }
+
+            h3 {
+                color: #7c3aed;
+            }
+
+            h4,
+            .author-name {
+                color: #d97706;
+            }
+
+            .university-info,
+            .text-muted,
+            .footer {
+                color: #666;
+            }
+
+            pre,
+            .architecture-diagram {
+                background: #f5f5f5;
+                border: 1px solid #ddd;
+            }
+
+            th {
+                background: #e8e8ff;
+            }
+
+            .screenshot {
+                border: 1px solid #ddd;
+                box-shadow: none;
+            }
+
+            section {
+                page-break-inside: avoid;
+            }
+
+            .toc a {
+                color: #333;
+            }
+        }
+
+        @page {
+            margin: 2cm;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="university-info">
+                <strong>University of Mustapha Benboulaid, Batna 2, Algeria</strong><br>
+                Faculty of Mathematics and Computer Science<br>
+                Department of Computer Science<br>
+                <strong>Specialty:</strong> Digital Transformation and Innovation<br>
+                <strong>Module:</strong> Innovation Management<br>
+                <strong>Academic Year:</strong> 2025-2026
+            </div>
+
+            <h1>💡 Innovation Idea Tracker</h1>
+            <p class="subtitle">Complete Documentation - User Guide & Technical Reference</p>
+
+            <div class="author-info">
+                <p class="author-name">Youcef Houssem</p>
+                <p>Master 1 - Digital Transformation and Innovation</p>
+                <p>Date: January 2026</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Table of Contents -->
+    <nav class="toc">
+        <h2>📑 Table of Contents</h2>
+        <div class="toc-grid">
+            <div>
+                <h4 style="color: var(--accent); margin-bottom: 1rem;">Part I: User Guide</h4>
+                <a href="#introduction"><span class="toc-number">1.</span>Introduction</a>
+                <a href="#getting-started"><span class="toc-number">2.</span>Getting Started</a>
+                <a href="#registration"><span class="toc-number">3.</span>User Registration</a>
+                <a href="#login"><span class="toc-number">4.</span>Logging In</a>
+                <a href="#submitting"><span class="toc-number">5.</span>Submitting Ideas</a>
+                <a href="#voting"><span class="toc-number">6.</span>Voting on Ideas</a>
+                <a href="#commenting"><span class="toc-number">7.</span>Commenting</a>
+                <a href="#managing"><span class="toc-number">8.</span>Managing Your Ideas</a>
+            </div>
+            <div>
+                <h4 style="color: var(--accent); margin-bottom: 1rem;">Part II: Technical Documentation</h4>
+                <a href="#architecture"><span class="toc-number">9.</span>System Architecture</a>
+                <a href="#tech-stack"><span class="toc-number">10.</span>Technology Stack</a>
+                <a href="#database"><span class="toc-number">11.</span>Database Schema</a>
+                <a href="#project-structure"><span class="toc-number">12.</span>Project Structure</a>
+                <a href="#installation"><span class="toc-number">13.</span>Installation Guide</a>
+                <a href="#api"><span class="toc-number">14.</span>API Endpoints</a>
+                <a href="#deployment"><span class="toc-number">15.</span>Deployment</a>
+                <a href="#security"><span class="toc-number">16.</span>Security</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content">
+        <!-- PART I: USER GUIDE -->
+        <section id="introduction">
+            <h2>1. Introduction</h2>
+            <p>The <strong>Innovation Idea Tracker</strong> is a web application designed to facilitate the submission,
+                tracking, and evaluation of innovative ideas within organizations or academic communities. This platform
+                enables users to propose creative solutions, engage in constructive feedback through voting and
+                comments, and track the progress of ideas from conception to implementation.</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💡</div>
+                    <h4>Submit Ideas</h4>
+                    <p>Share your innovative concepts with the community</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👍</div>
+                    <h4>Vote</h4>
+                    <p>Support ideas you believe in with upvotes/downvotes</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h4>Comment</h4>
+                    <p>Provide constructive feedback and suggestions</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h4>Track Progress</h4>
+                    <p>Monitor the status of submitted ideas</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="getting-started">
+            <h2>2. Getting Started</h2>
+            <p>To access the Innovation Idea Tracker, open your web browser and navigate to the application URL. The
+                homepage provides an overview of the platform with:</p>
+
+            <ul>
+                <li><strong>Hero Section:</strong> Welcome message with platform statistics</li>
+                <li><strong>Navigation Bar:</strong> Access to all main features</li>
+                <li><strong>Category Filters:</strong> Filter ideas by innovation category</li>
+                <li><strong>Ideas Grid:</strong> Browsable list of all submitted ideas</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="images/homepage.jpg" alt="Innovation Idea Tracker Homepage" class="screenshot">
+                <p class="screenshot-caption">Figure 2.1: Innovation Idea Tracker Homepage - Modern dark theme interface
+                    with hero section</p>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>💡 Tip:</strong> You can browse ideas without logging in, but to submit ideas, vote, or comment,
+                you need to create an account.
+            </div>
+        </section>
+
+        <section id="registration">
+            <h2>3. User Registration</h2>
+            <p>To fully participate in the innovation community, you must first create an account.</p>
+
+            <h3>Registration Steps:</h3>
+            <div class="steps">
+                <div class="step">Click <strong>"Get Started"</strong> or <strong>"Sign In"</strong> on the homepage
+                </div>
+                <div class="step">Click the <strong>"Create one now"</strong> link on the login page</div>
+                <div class="step">Fill in the registration form with your details</div>
+                <div class="step">Click <strong>"Create Account"</strong> to complete registration</div>
+            </div>
+
+            <h3>Registration Requirements:</h3>
+            <table>
+                <tr>
+                    <th>Field</th>
+                    <th>Requirements</th>
+                </tr>
+                <tr>
+                    <td>Username</td>
+                    <td>3-80 characters, unique</td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td>Valid email format, unique</td>
+                </tr>
+                <tr>
+                    <td>Password</td>
+                    <td>Minimum 6 characters</td>
+                </tr>
+                <tr>
+                    <td>Confirm Password</td>
+                    <td>Must match password</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="login">
+            <h2>4. Logging In</h2>
+            <p>Once registered, you can access your account to start participating.</p>
+
+            <h3>Login Steps:</h3>
+            <div class="steps">
+                <div class="step">Click <strong>"Sign In"</strong> in the navigation bar</div>
+                <div class="step">Enter your email and password</div>
+                <div class="step">Click the <strong>"Sign In"</strong> button</div>
+            </div>
+
+            <div class="alert alert-success">
+                <strong>✅ Demo Account:</strong> For testing purposes, you can use:<br>
+                <code>Email: admin@example.com</code> | <code>Password: admin123</code>
+            </div>
+        </section>
+
+        <section id="submitting">
+            <h2>5. Submitting Ideas</h2>
+            <p>Once logged in, you can contribute to the innovation community by submitting your ideas.</p>
+
+            <h3>How to Submit an Idea:</h3>
+            <div class="steps">
+                <div class="step">Click <strong>"Submit Idea"</strong> in the navigation menu</div>
+                <div class="step">Enter a clear, descriptive title (5-200 characters)</div>
+                <div class="step">Select an appropriate category for your idea</div>
+                <div class="step">Write a detailed description (minimum 20 characters)</div>
+                <div class="step">Click <strong>"Submit Idea"</strong> to publish</div>
+            </div>
+
+            <h3>Available Categories:</h3>
+            <div class="category-list">
+                <span class="category-badge">💻 Technology</span>
+                <span class="category-badge">⚙️ Process Improvement</span>
+                <span class="category-badge">🎯 Customer Experience</span>
+                <span class="category-badge">🌱 Sustainability</span>
+                <span class="category-badge">💰 Cost Reduction</span>
+                <span class="category-badge">🚀 Product Innovation</span>
+                <span class="category-badge">❤️ Employee Wellness</span>
+                <span class="category-badge">🔄 Digital Transformation</span>
+            </div>
+
+            <div class="alert alert-warning">
+                <strong>📝 Tips for Great Ideas:</strong>
+                <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li>Be specific about the problem you're solving</li>
+                    <li>Include potential benefits and impact</li>
+                    <li>Mention resources or tools needed</li>
+                    <li>Keep explanations clear and understandable</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="voting">
+            <h2>6. Voting on Ideas</h2>
+            <p>The voting system allows the community to show support for ideas they believe in.</p>
+
+            <h3>How to Vote:</h3>
+            <ul>
+                <li>Navigate to any idea (from homepage or idea detail page)</li>
+                <li>Click <strong>👍 Upvote</strong> to support an idea</li>
+                <li>Click <strong>👎 Downvote</strong> if you disagree</li>
+                <li>Click the same button again to remove your vote</li>
+            </ul>
+
+            <h3>Voting Rules:</h3>
+            <table>
+                <tr>
+                    <th>Rule</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>One vote per idea</td>
+                    <td>Each user can only vote once per idea</td>
+                </tr>
+                <tr>
+                    <td>Changeable votes</td>
+                    <td>You can change your vote at any time</td>
+                </tr>
+                <tr>
+                    <td>Real-time updates</td>
+                    <td>Vote counts update immediately via AJAX</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="commenting">
+            <h2>7. Commenting on Ideas</h2>
+            <p>Engage in constructive discussions by providing feedback on ideas.</p>
+
+            <h3>Adding a Comment:</h3>
+            <div class="steps">
+                <div class="step">Open an idea's detail page by clicking on the idea</div>
+                <div class="step">Scroll to the <strong>Comments</strong> section</div>
+                <div class="step">Type your comment in the text box</div>
+                <div class="step">Click <strong>"Post Comment"</strong> to submit</div>
+            </div>
+
+            <h3>Replying to Comments:</h3>
+            <p>The platform supports threaded discussions. Click <strong>"↩️ Reply"</strong> on any comment to respond
+                directly, creating organized conversation threads.</p>
+        </section>
+
+        <section id="managing">
+            <h2>8. Managing Your Ideas</h2>
+
+            <h3>Viewing Your Ideas:</h3>
+            <p>Click <strong>"My Ideas"</strong> in the navigation menu to see all ideas you've submitted, along with
+                their current status and engagement metrics.</p>
+
+            <h3>Idea Statuses:</h3>
+            <table>
+                <tr>
+                    <th>Status</th>
+                    <th>Meaning</th>
+                </tr>
+                <tr>
+                    <td><strong>Pending</strong></td>
+                    <td>Awaiting review by administrators</td>
+                </tr>
+                <tr>
+                    <td><strong>Approved</strong></td>
+                    <td>Accepted by reviewers for consideration</td>
+                </tr>
+                <tr>
+                    <td><strong>Rejected</strong></td>
+                    <td>Not approved for implementation</td>
+                </tr>
+                <tr>
+                    <td><strong>Implemented</strong></td>
+                    <td>The idea has been realized</td>
+                </tr>
+            </table>
+
+            <h3>Deleting an Idea:</h3>
+            <p>Navigate to your idea's detail page and click <strong>"Delete Idea"</strong> to remove it. Only the idea
+                author or administrators can delete ideas.</p>
+        </section>
+
+        <!-- PART II: TECHNICAL DOCUMENTATION -->
+        <section id="architecture">
+            <h2>9. System Architecture</h2>
+            <p>The Innovation Idea Tracker follows the <strong>MVC (Model-View-Controller)</strong> design pattern,
+                providing a clear separation of concerns.</p>
+
+            <h3>Architecture Diagram:</h3>
+            <div class="architecture-diagram">
+                ┌─────────────────────────────────────────────────────────┐
+                │ Client (Browser) │
+                │ HTML/CSS/JavaScript │
+                └─────────────────────────┬───────────────────────────────┘
+                │ HTTP/HTTPS
+                ┌─────────────────────────▼───────────────────────────────┐
+                │ Flask Application │
+                │ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+                │ │ Routes │ │ Forms │ │ Models │ │
+                │ │ (app.py) │ │ (forms.py) │ │ (models.py) │ │
+                │ └─────────────┘ └─────────────┘ └─────────────┘ │
+                │ │ │
+                │ ┌─────────────────────────────────────────────────┐ │
+                │ │ Flask Extensions │ │
+                │ │ Flask-Login │ Flask-SQLAlchemy │ Flask-WTF │ │
+                │ └─────────────────────────────────────────────────┘ │
+                └─────────────────────────┬───────────────────────────────┘
+                │ SQLAlchemy ORM
+                ┌─────────────────────────▼───────────────────────────────┐
+                │ SQLite Database │
+                │ (Can be upgraded to PostgreSQL) │
+                └─────────────────────────────────────────────────────────┘
+            </div>
+
+            <h3>Design Components:</h3>
+            <ul>
+                <li><strong>Model:</strong> SQLAlchemy models defining database structure (models.py)</li>
+                <li><strong>View:</strong> Jinja2 templates for HTML rendering (templates/)</li>
+                <li><strong>Controller:</strong> Flask routes handling requests and responses (app.py)</li>
+            </ul>
+        </section>
+
+        <section id="tech-stack">
+            <h2>10. Technology Stack</h2>
+            <p>The application is built using modern Python web development technologies:</p>
+
+            <table>
+                <tr>
+                    <th>Component</th>
+                    <th>Technology</th>
+                    <th>Version</th>
+                </tr>
+                <tr>
+                    <td>Backend Framework</td>
+                    <td>Flask</td>
+                    <td>3.0.0</td>
+                </tr>
+                <tr>
+                    <td>Database ORM</td>
+                    <td>Flask-SQLAlchemy</td>
+                    <td>3.1.1</td>
+                </tr>
+                <tr>
+                    <td>Authentication</td>
+                    <td>Flask-Login</td>
+                    <td>0.6.3</td>
+                </tr>
+                <tr>
+                    <td>Form Handling</td>
+                    <td>Flask-WTF</td>
+                    <td>1.2.1</td>
+                </tr>
+                <tr>
+                    <td>Form Validation</td>
+                    <td>WTForms</td>
+                    <td>3.1.1</td>
+                </tr>
+                <tr>
+                    <td>WSGI Server</td>
+                    <td>Gunicorn</td>
+                    <td>21.2.0</td>
+                </tr>
+                <tr>
+                    <td>Database</td>
+                    <td>SQLite / PostgreSQL</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>Frontend</td>
+                    <td>HTML5, CSS3, JavaScript</td>
+                    <td>-</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="database">
+            <h2>11. Database Schema</h2>
+            <p>The application uses a relational database with five interconnected tables:</p>
+
+            <h3>Entity Relationship Diagram:</h3>
+            <div class="architecture-diagram">
+                ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+                │ Users │ │ Ideas │ │ Categories │
+                ├──────────────┤ ├──────────────┤ ├──────────────┤
+                │ id (PK) │────<│ submitter_id │ │ id (PK) │ │ username │ │ id (PK) │>────│ name │
+                    │ email │ │ title │ │ icon │
+                    │ password_hash│ │ description │ │ color │
+                    │ role │ │ category_id │>────│ is_predefined│
+                    │ avatar_color │ │ status │ └──────────────┘
+                    │ created_at │ │ created_at │
+                    └──────────────┘ └──────────────┘
+                    │ │
+                    │ │
+                    ▼ ▼
+                    ┌──────────────┐ ┌──────────────┐
+                    │ Votes │ │ Comments │
+                    ├──────────────┤ ├──────────────┤
+                    │ id (PK) │ │ id (PK) │
+                    │ idea_id (FK) │ │ idea_id (FK) │
+                    │ user_id (FK) │ │ user_id (FK) │
+                    │ vote_type │ │ parent_id(FK)│
+                    │ created_at │ │ content │
+                    └──────────────┘ │ created_at │
+                    └──────────────┘
+            </div>
+
+            <h3>Table Definitions:</h3>
+
+            <h4>Users Table</h4>
+            <table>
+                <tr>
+                    <th>Column</th>
+                    <th>Type</th>
+                    <th>Constraints</th>
+                </tr>
+                <tr>
+                    <td>id</td>
+                    <td>INTEGER</td>
+                    <td>PRIMARY KEY</td>
+                </tr>
+                <tr>
+                    <td>username</td>
+                    <td>VARCHAR(80)</td>
+                    <td>UNIQUE, NOT NULL</td>
+                </tr>
+                <tr>
+                    <td>email</td>
+                    <td>VARCHAR(120)</td>
+                    <td>UNIQUE, NOT NULL</td>
+                </tr>
+                <tr>
+                    <td>password_hash</td>
+                    <td>VARCHAR(256)</td>
+                    <td>NOT NULL</td>
+                </tr>
+                <tr>
+                    <td>role</td>
+                    <td>VARCHAR(20)</td>
+                    <td>DEFAULT 'submitter'</td>
+                </tr>
+                <tr>
+                    <td>avatar_color</td>
+                    <td>VARCHAR(7)</td>
+                    <td>DEFAULT '#6366f1'</td>
+                </tr>
+            </table>
+
+            <h4>Ideas Table</h4>
+            <table>
+                <tr>
+                    <th>Column</th>
+                    <th>Type</th>
+                    <th>Constraints</th>
+                </tr>
+                <tr>
+                    <td>id</td>
+                    <td>INTEGER</td>
+                    <td>PRIMARY KEY</td>
+                </tr>
+                <tr>
+                    <td>title</td>
+                    <td>VARCHAR(200)</td>
+                    <td>NOT NULL</td>
+                </tr>
+                <tr>
+                    <td>description</td>
+                    <td>TEXT</td>
+                    <td>NOT NULL</td>
+                </tr>
+                <tr>
+                    <td>category_id</td>
+                    <td>INTEGER</td>
+                    <td>FOREIGN KEY</td>
+                </tr>
+                <tr>
+                    <td>submitter_id</td>
+                    <td>INTEGER</td>
+                    <td>FOREIGN KEY</td>
+                </tr>
+                <tr>
+                    <td>status</td>
+                    <td>VARCHAR(20)</td>
+                    <td>DEFAULT 'pending'</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="project-structure">
+            <h2>12. Project Structure</h2>
+            <pre><code>idea_tracker/
+├── app.py                 # Main Flask application with routes
+├── models.py              # SQLAlchemy database models
+├── forms.py               # WTForms form definitions
+├── requirements.txt       # Python dependencies
+├── render.yaml            # Render.com deployment config
+├── README.md              # Project overview
+│
+├── static/
+│   └── style.css          # CSS styles (glassmorphism theme)
+│
+├── templates/
+│   ├── base.html          # Base template with navigation
+│   ├── auth/
+│   │   ├── login.html     # Login page
+│   │   └── register.html  # Registration page
+│   ├── ideas/
+│   │   ├── list.html      # Homepage with idea grid
+│   │   ├── detail.html    # Single idea view
+│   │   ├── submit.html    # Idea submission form
+│   │   └── my_ideas.html  # User's submitted ideas
+│   ├── admin/
+│   │   └── dashboard.html # Admin control panel
+│   └── errors/
+│       ├── 404.html       # Not found page
+│       └── 500.html       # Server error page
+│
+└── docs/
+    ├── index.html         # This documentation
+    ├── USER_GUIDE.md      # User documentation
+    └── TECHNICAL_DOCS.md  # Technical reference</code></pre>
+        </section>
+
+        <section id="installation">
+            <h2>13. Installation Guide</h2>
+
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>Python 3.11 or higher</li>
+                <li>pip (Python package manager)</li>
+                <li>Git (optional, for version control)</li>
+            </ul>
+
+            <h3>Local Development Setup</h3>
+            <pre><code># 1. Navigate to project directory
+cd idea_tracker
+
+# 2. Create virtual environment
+python -m venv venv
+
+# 3. Activate virtual environment
+# Windows:
+venv\Scripts\activate
+# Linux/Mac:
+source venv/bin/activate
+
+# 4. Install dependencies
+pip install -r requirements.txt
+
+# 5. Run the application
+python app.py
+
+# 6. Open browser at http://localhost:5000</code></pre>
+
+            <h3>Configuration</h3>
+            <table>
+                <tr>
+                    <th>Variable</th>
+                    <th>Description</th>
+                    <th>Default</th>
+                </tr>
+                <tr>
+                    <td>SECRET_KEY</td>
+                    <td>Flask secret key for sessions</td>
+                    <td>'dev-secret-key...'</td>
+                </tr>
+                <tr>
+                    <td>DATABASE_URL</td>
+                    <td>Database connection string</td>
+                    <td>'sqlite:///ideas.db'</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="api">
+            <h2>14. API Endpoints</h2>
+
+            <h3>Authentication Routes</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>GET/POST</td>
+                    <td>/register</td>
+                    <td>User registration</td>
+                </tr>
+                <tr>
+                    <td>GET/POST</td>
+                    <td>/login</td>
+                    <td>User login</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/logout</td>
+                    <td>User logout</td>
+                </tr>
+            </table>
+
+            <h3>Idea Routes</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/</td>
+                    <td>Homepage with ideas list</td>
+                </tr>
+                <tr>
+                    <td>GET/POST</td>
+                    <td>/idea/new</td>
+                    <td>Submit new idea</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/idea/&lt;id&gt;</td>
+                    <td>View idea details</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/idea/&lt;id&gt;/vote</td>
+                    <td>Vote on idea (AJAX)</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/idea/&lt;id&gt;/comment</td>
+                    <td>Add comment</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/idea/&lt;id&gt;/delete</td>
+                    <td>Delete idea</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/my-ideas</td>
+                    <td>View user's ideas</td>
+                </tr>
+            </table>
+
+            <h3>Admin Routes</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/admin</td>
+                    <td>Admin dashboard</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/admin/user/&lt;id&gt;/role</td>
+                    <td>Change user role</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/admin/idea/&lt;id&gt;/status</td>
+                    <td>Change idea status</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="deployment">
+            <h2>15. Deployment</h2>
+            <p>The application is configured for deployment on Render.com using the included <code>render.yaml</code>
+                file.</p>
+
+            <h3>Deployment Steps:</h3>
+            <div class="steps">
+                <div class="step">Push your code to a GitHub repository</div>
+                <div class="step">Create a new Web Service on Render.com</div>
+                <div class="step">Connect your GitHub repository</div>
+                <div class="step">Render auto-detects the <code>render.yaml</code> configuration</div>
+                <div class="step">Deployment completes automatically</div>
+            </div>
+
+            <h3>render.yaml Configuration:</h3>
+            <pre><code>services:
+  - type: web
+    name: innovation-idea-tracker
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.11.0</code></pre>
+        </section>
+
+        <section id="security">
+            <h2>16. Security Considerations</h2>
+
+            <h3>Implemented Security Measures:</h3>
+            <table>
+                <tr>
+                    <th>Feature</th>
+                    <th>Implementation</th>
+                </tr>
+                <tr>
+                    <td>Password Hashing</td>
+                    <td>Werkzeug's PBKDF2 with salt</td>
+                </tr>
+                <tr>
+                    <td>CSRF Protection</td>
+                    <td>Flask-WTF provides tokens for all forms</td>
+                </tr>
+                <tr>
+                    <td>Session Management</td>
+                    <td>Flask-Login secure sessions</td>
+                </tr>
+                <tr>
+                    <td>Input Validation</td>
+                    <td>WTForms validates all user input</td>
+                </tr>
+                <tr>
+                    <td>Access Control</td>
+                    <td>Role-based (submitter, reviewer, admin)</td>
+                </tr>
+            </table>
+
+            <h3>Production Recommendations:</h3>
+            <ul>
+                <li>Use PostgreSQL instead of SQLite for production</li>
+                <li>Set a strong, unique <code>SECRET_KEY</code></li>
+                <li>Enable HTTPS for all connections</li>
+                <li>Configure proper logging and monitoring</li>
+                <li>Implement regular database backups</li>
+            </ul>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><strong>Innovation Idea Tracker</strong></p>
+        <p>Developed by Youcef Houssem</p>
+        <p>Master 1 - Digital Transformation and Innovation</p>
+        <p>University of Mustapha Benboulaid, Batna 2</p>
+        <p style="margin-top: 1rem;">Document Version: 1.0 | Last Updated: January 2026</p>
+    </footer>
+</body>
+
+</html>
