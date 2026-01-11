@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +9,15 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
     <!-- Animated Background -->
     <div class="bg-gradient"></div>
     <div class="bg-grid"></div>
-    
+
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
@@ -22,53 +25,56 @@
                 <span class="logo-icon">💡</span>
                 <span class="logo-text">IdeaTracker</span>
             </a>
-            
+
             <div class="nav-links">
                 <a href="{{ url_for('home') }}" class="nav-link {% if request.endpoint == 'home' %}active{% endif %}">
                     <span class="nav-icon">🏠</span>
                     <span>Home</span>
                 </a>
-                
+
                 {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('submit_idea') }}" class="nav-link {% if request.endpoint == 'submit_idea' %}active{% endif %}">
-                        <span class="nav-icon">✨</span>
-                        <span>Submit Idea</span>
-                    </a>
-                    <a href="{{ url_for('my_ideas') }}" class="nav-link {% if request.endpoint == 'my_ideas' %}active{% endif %}">
-                        <span class="nav-icon">📁</span>
-                        <span>My Ideas</span>
-                    </a>
-                    {% if current_user.is_admin() %}
-                        <a href="{{ url_for('admin_dashboard') }}" class="nav-link {% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
-                            <span class="nav-icon">⚙️</span>
-                            <span>Admin</span>
-                        </a>
-                    {% endif %}
+                <a href="{{ url_for('submit_idea') }}"
+                    class="nav-link {% if request.endpoint == 'submit_idea' %}active{% endif %}">
+                    <span class="nav-icon">✨</span>
+                    <span>Submit Idea</span>
+                </a>
+                <a href="{{ url_for('my_ideas') }}"
+                    class="nav-link {% if request.endpoint == 'my_ideas' %}active{% endif %}">
+                    <span class="nav-icon">📁</span>
+                    <span>My Ideas</span>
+                </a>
+                {% if current_user.is_admin() %}
+                <a href="{{ url_for('admin_dashboard') }}"
+                    class="nav-link {% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Admin</span>
+                </a>
+                {% endif %}
                 {% endif %}
             </div>
-            
+
             <div class="nav-auth">
                 {% if current_user.is_authenticated %}
-                    <div class="user-menu">
-                        <div class="user-avatar" style="background: {{ current_user.avatar_color }}">
-                            {{ current_user.get_initials() }}
-                        </div>
-                        <div class="user-dropdown">
-                            <div class="dropdown-header">
-                                <strong>{{ current_user.username }}</strong>
-                                <span class="user-role">{{ current_user.role.title() }}</span>
-                            </div>
-                            <div class="dropdown-divider"></div>
-                            <a href="{{ url_for('my_ideas') }}" class="dropdown-item">📁 My Ideas</a>
-                            <a href="{{ url_for('logout') }}" class="dropdown-item">🚪 Sign Out</a>
-                        </div>
+                <div class="user-menu">
+                    <div class="user-avatar" style="background: {{ current_user.avatar_color }}">
+                        {{ current_user.get_initials() }}
                     </div>
+                    <div class="user-dropdown">
+                        <div class="dropdown-header">
+                            <strong>{{ current_user.username }}</strong>
+                            <span class="user-role">{{ current_user.role.title() }}</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ url_for('my_ideas') }}" class="dropdown-item">📁 My Ideas</a>
+                        <a href="{{ url_for('logout') }}" class="dropdown-item">🚪 Sign Out</a>
+                    </div>
+                </div>
                 {% else %}
-                    <a href="{{ url_for('login') }}" class="btn btn-ghost">Sign In</a>
-                    <a href="{{ url_for('register') }}" class="btn btn-primary">Get Started</a>
+                <a href="{{ url_for('login') }}" class="btn btn-ghost">Sign In</a>
+                <a href="{{ url_for('register') }}" class="btn btn-primary">Get Started</a>
                 {% endif %}
             </div>
-            
+
             <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
                 <span></span>
                 <span></span>
@@ -76,45 +82,46 @@
             </button>
         </div>
     </nav>
-    
+
     <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobileMenu">
         <a href="{{ url_for('home') }}" class="mobile-link">🏠 Home</a>
         {% if current_user.is_authenticated %}
-            <a href="{{ url_for('submit_idea') }}" class="mobile-link">✨ Submit Idea</a>
-            <a href="{{ url_for('my_ideas') }}" class="mobile-link">📁 My Ideas</a>
-            {% if current_user.is_admin() %}
-                <a href="{{ url_for('admin_dashboard') }}" class="mobile-link">⚙️ Admin</a>
-            {% endif %}
-            <a href="{{ url_for('logout') }}" class="mobile-link">🚪 Sign Out</a>
+        <a href="{{ url_for('submit_idea') }}" class="mobile-link">✨ Submit Idea</a>
+        <a href="{{ url_for('my_ideas') }}" class="mobile-link">📁 My Ideas</a>
+        {% if current_user.is_admin() %}
+        <a href="{{ url_for('admin_dashboard') }}" class="mobile-link">⚙️ Admin</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}" class="mobile-link">🚪 Sign Out</a>
         {% else %}
-            <a href="{{ url_for('login') }}" class="mobile-link">🔑 Sign In</a>
-            <a href="{{ url_for('register') }}" class="mobile-link">🚀 Get Started</a>
+        <a href="{{ url_for('login') }}" class="mobile-link">🔑 Sign In</a>
+        <a href="{{ url_for('register') }}" class="mobile-link">🚀 Get Started</a>
         {% endif %}
     </div>
-    
+
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-container">
-                {% for category, message in messages %}
-                    <div class="flash flash-{{ category }}" onclick="this.remove()">
-                        <span class="flash-icon">
-                            {% if category == 'success' %}✅{% elif category == 'error' %}❌{% elif category == 'warning' %}⚠️{% else %}ℹ️{% endif %}
-                        </span>
-                        <span class="flash-message">{{ message }}</span>
-                        <button class="flash-close">×</button>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+    {% if messages %}
+    <div class="flash-container">
+        {% for category, message in messages %}
+        <div class="flash flash-{{ category }}" onclick="this.remove()">
+            <span class="flash-icon">
+                {% if category == 'success' %}✅{% elif category == 'error' %}❌{% elif category == 'warning' %}⚠️{% else
+                %}ℹ️{% endif %}
+            </span>
+            <span class="flash-message">{{ message }}</span>
+            <button class="flash-close">×</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
     {% endwith %}
-    
+
     <!-- Main Content -->
     <main class="main-content">
         {% block content %}{% endblock %}
     </main>
-    
+
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
@@ -125,10 +132,10 @@
             <p class="footer-text">
                 University of Mustapha Benboulaid, Batna 2 • Digital Transformation & Innovation
             </p>
-            <p class="footer-copyright">© 2024-2025 • Module: Innovation Management</p>
+            <p class="footer-copyright">© 2025-2026 • Module: Innovation Management</p>
         </div>
     </footer>
-    
+
     <script>
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
@@ -136,7 +143,7 @@
             menu.classList.toggle('active');
             btn.classList.toggle('active');
         }
-        
+
         // Auto-hide flash messages
         setTimeout(() => {
             document.querySelectorAll('.flash').forEach(flash => {
@@ -144,7 +151,7 @@
                 setTimeout(() => flash.remove(), 300);
             });
         }, 5000);
-        
+
         // Vote function for AJAX voting
         async function vote(ideaId, voteType) {
             try {
@@ -155,31 +162,31 @@
                     },
                     body: JSON.stringify({ vote_type: voteType })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     // Update vote count display
                     const voteCountEl = document.querySelector(`#vote-count-${ideaId}`);
                     if (voteCountEl) {
                         voteCountEl.textContent = data.vote_count;
                     }
-                    
+
                     // Update button states
                     const upBtn = document.querySelector(`#upvote-${ideaId}`);
                     const downBtn = document.querySelector(`#downvote-${ideaId}`);
-                    
+
                     if (upBtn && downBtn) {
                         upBtn.classList.remove('active');
                         downBtn.classList.remove('active');
-                        
+
                         if (data.user_vote === 1) {
                             upBtn.classList.add('active');
                         } else if (data.user_vote === -1) {
                             downBtn.classList.add('active');
                         }
                     }
-                    
+
                     // Update individual counts
                     const upCountEl = document.querySelector(`#upvotes-${ideaId}`);
                     const downCountEl = document.querySelector(`#downvotes-${ideaId}`);
@@ -190,7 +197,7 @@
                 console.error('Vote error:', error);
             }
         }
-        
+
         // Reply toggle function
         function toggleReply(commentId) {
             const form = document.querySelector(`#reply-form-${commentId}`);
@@ -202,7 +209,8 @@
             }
         }
     </script>
-    
+
     {% block scripts %}{% endblock %}
 </body>
+
 </html>
